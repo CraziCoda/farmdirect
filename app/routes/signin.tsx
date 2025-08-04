@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router';
 import { loginUser, fetchProfile } from '../store/userSlice';
 import type { AppDispatch, RootState } from '../store/store';
 import type { Route } from "./+types/signin";
@@ -15,19 +16,20 @@ export default function SignIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
   const { loading, isAuthenticated } = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
     if (isAuthenticated) {
       dispatch(fetchProfile()).then((result) => {
         if (result.payload?.accountType === 'farmer') {
-          window.location.href = '/farmer';
+          navigate('/farmer');
         } else {
-          window.location.href = '/buyer';
+          navigate('/buyer');
         }
       });
     }
-  }, [isAuthenticated, dispatch]);
+  }, [isAuthenticated, dispatch, navigate]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
